@@ -1,0 +1,36 @@
+name: Deploy React to AWS EC2
+
+on:
+  push:
+    branches:
+      - main
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # 로컬 myreact의 모든 파일을 서버의 ~/pivot-dev/frontend 폴더로 전송
+      - name: Copy Frontend files via SSH (SCP)
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.EC2_HOST}}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          port: 22
+          source: "**"
+          target: "~/pivot-dev/frontend"
+      
+      - name: Deploy via SSH (Command)
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.EC2_HOST}}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          port: 22
+          script: |
+            cd ~/pivot-dev
+
+            docker compose up -d --build
