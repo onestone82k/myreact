@@ -7,6 +7,7 @@ import './App.css'
 function App() {
   const [count, setCount] = useState(0)
 
+
   return (
     <>
       <section id="center">
@@ -28,6 +29,11 @@ function App() {
         >
           Count is {count}
         </button>
+        <div style={{ marginTop: '20px' }}>
+          <a href="/api/message" className="counter" style={{ padding: '10px 20px', textDecoration: 'none' }}>
+            API 테스트 페이지로 이동
+          </a>
+        </div>
       </section>
 
       <div className="ticks"></div>
