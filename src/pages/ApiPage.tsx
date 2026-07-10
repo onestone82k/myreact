@@ -7,9 +7,9 @@ interface MessageResponse {
 
 function ApiPage(){
   const [data, setData] = useState<string>("로딩 중...");
-  const BASE_URL = ''
+  
   useEffect(()=>{
-    fetch(`${BASE_URL}/api/message`)
+    fetch(`/api/message`)
     .then((res) => res.json())
     .then((json: MessageResponse) => setData(json.message))
     .catch(()=>setData("데이터를 불러오지 못했습니다."));
