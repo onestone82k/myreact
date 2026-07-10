@@ -8,7 +8,7 @@ import './index.css'
 
 const router = createBrowserRouter([
   { path: "/", element: <App />},
-  { path: "/api/message", element: <ApiPage />}
+  { path: "/apipage", element: <ApiPage />}
 ]);
 
 createRoot(document.getElementById('root')!).render(
