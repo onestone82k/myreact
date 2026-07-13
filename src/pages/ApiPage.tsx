@@ -14,7 +14,7 @@ function ApiPage(){
     .then((json: MessageResponse) => setData(json.message))
     .catch(()=>setData("데이터를 불러오지 못했습니다."));
   },[]);
-
+ 
   return(
     <div style={{ padding: '50px', textAlign: 'center' }}>
       <h1>API 통신 결과</h1>
