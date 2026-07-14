@@ -1,8 +1,15 @@
 import { useEffect, useState } from "react";
 import { Link } from 'react-router-dom'
 
+// 1. 데이터 구조에 맞춰 타입 수정
+interface Target {
+  idx: number;
+  biz_no: string;
+  corp_nm: string;
+}
+
 interface MessageResponse {
-  message: string;
+  message: Target[]; // message는 Target 객체들의 배열입니다.
 }
 
 function ApiPage(){
