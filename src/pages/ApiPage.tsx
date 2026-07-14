@@ -12,23 +12,37 @@ interface MessageResponse {
   message: Target[]; // message는 Target 객체들의 배열입니다.
 }
 
-function ApiPage(){
-  const [data, setData] = useState<string>("로딩 중...");
-  
-  useEffect(()=>{
+function ApiPage() {
+  // 2. 초기값을 빈 배열로 설정
+  const [data, setData] = useState<Target[]>([]); 
+  const [loading, setLoading] = useState<boolean>(true);
+
+  useEffect(() => {
     fetch(`/api/message`)
-    .then((res) => res.json())
-    .then((json: MessageResponse) => setData(json.message))
-    .catch(()=>setData("데이터를 불러오지 못했습니다."));
-  },[]);
- 
-  return(
+      .then((res) => res.json())
+      .then((json: MessageResponse) => {
+        setData(json.message); // 배열이 그대로 들어갑니다.
+        setLoading(false);
+      })
+      .catch(() => {
+        setLoading(false);
+        // 에러 처리 시에는 별도의 에러 상태를 두는 것이 좋습니다.
+      });
+  }, []);
+
+  return (
     <div style={{ padding: '50px', textAlign: 'center' }}>
       <h1>API 통신 결과</h1>
-      <p style={{ fontSize: '20px', color: '#646cff'}}>{data}</p>
-      <Link to="/">홈으로 돌아가기</Link>
+      {loading ? <p>로딩 중...</p> : (
+        // 3. 배열을 순회하며 corp_nm을 출력
+        <ul>
+          {data.map((item) => (
+            <li key={item.idx}>{item.corp_nm}</li>
+          ))}
+        </ul>
+      )}
     </div>
-  )
+  );
 }
 
 export default ApiPage;
