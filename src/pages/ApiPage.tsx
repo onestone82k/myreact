@@ -35,11 +35,20 @@ function ApiPage() {
       <h1>API 통신 결과</h1>
       {loading ? <p>로딩 중...</p> : (
         // 3. 배열을 순회하며 corp_nm을 출력
-        <ul>
+       <table style={{ margin: '0 auto', textAlign: 'left' }}>
+        <thead>
+          <tr><th>인덱스</th><th>사업자번호</th><th>기업명</th></tr>
+        </thead>
+        <tbody>
           {data.map((item) => (
-            <li key={item.idx}>{item.corp_nm}</li>
+            <tr key={item.idx}>
+              <td>{item.idx}</td>
+              <td>{item.biz_no}</td>
+              <td>{item.corp_nm}</td>
+            </tr>
           ))}
-        </ul>
+        </tbody>
+      </table>
       )}
     </div>
   );
