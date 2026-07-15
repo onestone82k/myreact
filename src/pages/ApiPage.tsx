@@ -7,10 +7,6 @@ interface Target {
   corp_nm: string;
 }
 
-interface MessageResponse {
-  message: Target[];
-}
-
 function ApiPage() {
   const [data, setData] = useState<Target[]>([]); 
   const [loading, setLoading] = useState<boolean>(true);
