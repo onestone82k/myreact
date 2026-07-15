@@ -34,6 +34,5 @@ jobs:
           script: |
             cd ~/pivot-dev
 
-            docker compose down frontend
             docker compose build --no-cache frontend
             docker compose up -d frontend
