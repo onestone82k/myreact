@@ -1,7 +1,6 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { Link } from 'react-router-dom';
 
-// 1. 데이터 구조에 맞춰 타입 수정
 interface Target {
   idx: number;
   biz_no: string;
@@ -15,39 +14,52 @@ interface MessageResponse {
 function ApiPage() {
   const [data, setData] = useState<Target[]>([]); 
   const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null); // 에러를 담을 상태 추가
+  const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    fetch(`/api/message`)
+  // 데이터 불러오기 로직을 함수로 분리 (재사용 가능하도록)
+  const fetchData = useCallback(() => {
+    setLoading(true);
+    setError(null);
+    
+    // 브라우저 캐시를 강제로 무시하도록 URL 끝에 현재 시간을 붙입니다.
+    fetch(`/api/message?t=${new Date().getTime()}`)
       .then((res) => {
-        // 서버 응답이 200번대(정상)가 아니면 에러 발생시키기
-        if (!res.ok) {
-          throw new Error("서버 응답 오류");
-        }
+        if (!res.ok) throw new Error("서버 응답 오류");
         return res.json();
       })
       .then((json: any) => {
-        // [핵심 로직] 받아온 데이터(json.message)가 진짜 '배열'인지 한 번 더 확인!
-        // 이렇게 하면 React error #31을 완벽히 막을 수 있습니다.
         if (json && Array.isArray(json.message)) {
           setData(json.message);
         } else {
           setError("데이터 형식이 올바르지 않습니다.");
         }
-        setLoading(false);
       })
       .catch((err) => {
         console.error(err);
         setError("데이터를 불러오는 중 문제가 발생했습니다.");
+      })
+      .finally(() => {
         setLoading(false);
       });
   }, []);
+
+  // 컴포넌트가 처음 마운트될 때 한 번 실행
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
 
   return (
     <div style={{ padding: '50px', textAlign: 'center' }}>
       <h1>API 통신 결과</h1>
       
-      {/* 3단계 렌더링: 로딩 중 -> 에러 발생 -> 정상 출력 */}
+      {/* 다시 불러오기 버튼 추가 */}
+      <button 
+        onClick={fetchData} 
+        style={{ marginBottom: '20px', padding: '8px 16px', cursor: 'pointer' }}
+      >
+        🔄 최신 데이터 다시 불러오기
+      </button>
+
       {loading ? (
         <p>데이터를 불러오는 중입니다...</p>
       ) : error ? (
@@ -68,7 +80,6 @@ function ApiPage() {
             </tr>
           </thead>
           <tbody>
-            {/* 데이터가 비어있을 때의 처리 */}
             {data.length === 0 ? (
               <tr>
                 <td colSpan={3} style={{ textAlign: 'center', padding: '20px' }}>
